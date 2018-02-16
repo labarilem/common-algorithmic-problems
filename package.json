@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "setup": "npm i",
-    "test": "mocha -r ts-node/register src/**/*.spec.ts"
+    "test": "mocha -r ts-node/register src/**/*.spec.ts",
+    "ci": "npm run test"
   },
   "repository": {
     "type": "git",
