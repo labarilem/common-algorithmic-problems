@@ -4,13 +4,18 @@
     {
       "type": "node",
       "request": "launch",
-      "preLaunchTask": "build.test",
-      "name": "Tests",
-      "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
-      "args": ["${workspaceRoot}/debug/**/*.js"],
+      "name": "Debug tests",
       "cwd": "${workspaceRoot}",
-      "outFiles": []
-  }
-  ],
-  "compounds": []
+      "preLaunchTask": "build.test",
+      "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
+      "args": [
+        "debug/**/*.spec.js"
+      ],
+      "sourceMaps": true,
+      "outFiles": [
+        "debug/**/*.js"
+      ],
+      "internalConsoleOptions": "openOnSessionStart"
+    }
+  ]
 }

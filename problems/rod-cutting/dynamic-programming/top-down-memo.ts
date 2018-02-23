@@ -1,33 +1,30 @@
-import { IProblemOutput, IProblemInput } from "../model";
+import { IProblemSolution, IProblemInput } from "../model";
 
-export function topDownMemoSolver(input: IProblemInput): IProblemOutput {
-  const solutions: IProblemOutput[] = [ { lengths: [0] } ];
-  const output = topDownMemoSolverAux(input, solutions);
-  return output;
+export function topDownMemoSolver(input: IProblemInput): IProblemSolution {
+  const solutions: number[][] = [[0]];
+  const maxRevenues: number[] = [0];
+  const solutionLengths = topDownMemoSolverAux(input.n, input.prices, maxRevenues, solutions);
+  const solution: IProblemSolution = { lengths: solutionLengths };
+  return solution;
 }
 
-function topDownMemoSolverAux(input: IProblemInput, solutions: IProblemOutput[]): IProblemOutput {
+function topDownMemoSolverAux(n: number, prices: number[], maxRevenues: number[], solutions: number[][]): number[] {
 
-  if(solutions[input.n] !== undefined) {
-    return solutions[input.n];
+  if(solutions[n] !== undefined) {
+    return solutions[n];
   }
 
-  let max = input.prices[input.n];
-  solutions[input.n] = { lengths: [input.n] };
+  maxRevenues[n] = prices[n];
+  solutions[n] = [n];
 
-  for(let i = 1; i < input.n; i++) {
-    const inp = { n: input.n - i, prices: input.prices };
-    const out = topDownMemoSolverAux(inp, solutions);
-    const currRevenue = input.prices[i] + computeRevenue(inp, out);
-    if(currRevenue > max) {
-      max = currRevenue;
-      solutions[input.n] = { lengths: [...out.lengths, input.n - i] };
+  for(let i = 1; i < n; i++) {
+    const subSolution = topDownMemoSolverAux(n - i, prices, maxRevenues, solutions);
+    const currRevenue = prices[i] + maxRevenues[n-i];
+    if(currRevenue > maxRevenues[n]) {
+      maxRevenues[n] = currRevenue;
+      solutions[n] = [...subSolution, i];
     }
   }
 
-  return solutions[input.n];
-}
-
-function computeRevenue(input: IProblemInput, out: IProblemOutput): number {
-  return out.lengths.map(l => input.prices[l]).reduce((p, c) => p + c );
+  return solutions[n];
 }
