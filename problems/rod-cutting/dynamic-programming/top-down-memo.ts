@@ -10,17 +10,17 @@ export function topDownMemoSolver(input: IProblemInput): IProblemSolution {
 
 function topDownMemoSolverAux(n: number, prices: number[], maxRevenues: number[], solutions: number[][]): number[] {
 
-  if(solutions[n] !== undefined) {
+  if (solutions[n] !== undefined) {
     return solutions[n];
   }
 
   maxRevenues[n] = prices[n];
   solutions[n] = [n];
 
-  for(let i = 1; i < n; i++) {
+  for (let i = 1; i < n; i++) {
     const subSolution = topDownMemoSolverAux(n - i, prices, maxRevenues, solutions);
-    const currRevenue = prices[i] + maxRevenues[n-i];
-    if(currRevenue > maxRevenues[n]) {
+    const currRevenue = prices[i] + maxRevenues[n - i];
+    if (currRevenue > maxRevenues[n]) {
       maxRevenues[n] = currRevenue;
       solutions[n] = [...subSolution, i];
     }

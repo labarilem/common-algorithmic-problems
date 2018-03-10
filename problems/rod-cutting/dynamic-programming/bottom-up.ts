@@ -10,16 +10,16 @@ function bottomUpSolverAux(n: number, prices: number[]): number[] {
   const solutions: number[][] = [[0]];
   const maxRevenues: number[] = [0];
 
-  for(let i = 1; i <= n; i++) {
+  for (let i = 1; i <= n; i++) {
 
     maxRevenues[i] = prices[i];
     solutions[i] = [i];
 
-    for(let j = 1; j < i; j++) {
-      let currRevenue = prices[j] + maxRevenues[i-j];
-      if(currRevenue > maxRevenues[i]) {
+    for (let j = 1; j < i; j++) {
+      let currRevenue = prices[j] + maxRevenues[i - j];
+      if (currRevenue > maxRevenues[i]) {
         maxRevenues[i] = currRevenue;
-        solutions[i] = [...solutions[i-j], j];
+        solutions[i] = [...solutions[i - j], j];
       }
     }
   }

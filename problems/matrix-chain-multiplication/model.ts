@@ -4,21 +4,32 @@
  * The problem is not actually to perform the multiplications, but merely to decide the sequence of the matrix multiplications involved.
  */
 
-export interface IMatrixInfo {
-  rows: number;
-  columns: number;
-}
-
 /**
 * Represents the input of a Matrix chain multiplication problem instance.
 */
 export interface IProblemInput {
-  matrices: IMatrixInfo[]
+  matrices: IMatrix[]
 }
 
 /**
 * Represents the solution of a Matrix chain multiplication problem instance.
 */
 export interface IProblemSolution {
-  lengths: number[];
+  parenthesization: IParenthesis[];
+}
+
+/**
+ * Represents a parenthesis applied to a sequence of matrices.
+ */
+export interface IParenthesis {
+  startIndex: number;
+  endIndex: number;
+}
+
+/**
+ * Represents the matrix informations that needed in this problem.
+ */
+export interface IMatrix {
+  rowsCount: number;
+  columnsCount: number;
 }
