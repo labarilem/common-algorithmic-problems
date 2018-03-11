@@ -2,20 +2,13 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Debug tests",
       "type": "node",
       "request": "launch",
-      "name": "Debug tests",
-      "cwd": "${workspaceRoot}",
-      "preLaunchTask": "build.test",
       "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
-      "args": [
-        "debug/**/*.spec.js"
-      ],
-      "sourceMaps": true,
-      "outFiles": [
-        "debug/**/*.js"
-      ],
-      "internalConsoleOptions": "openOnSessionStart"
-    }
+      "args": ["-r", "ts-node/register", "problems/**/*.spec.ts"],
+      "cwd": "${workspaceRoot}",
+      "protocol": "inspector"
+  }
   ]
 }

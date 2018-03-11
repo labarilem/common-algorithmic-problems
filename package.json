@@ -6,7 +6,6 @@
   "scripts": {
     "clean": "rimraf debug",
     "setup": "npm i",
-    "build.test": "tsc",
     "test": "mocha -r ts-node/register problems/**/*.spec.ts",
     "ci": "npm run build.test && npm run test"
   },

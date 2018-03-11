@@ -19,7 +19,7 @@ export function testSolver(solver: (input: IProblemInput) => IProblemSolution): 
       { rowsCount: 1, columnsCount: 2 },
       { rowsCount: 2, columnsCount: 3 }
     ],
-    expectedParenthesization: "(0, 1)"
+    expectedParenthesization: "(0)(1)"
   });
 
   // Test case #2
@@ -29,7 +29,7 @@ export function testSolver(solver: (input: IProblemInput) => IProblemSolution): 
       { rowsCount: 30, columnsCount: 5 },
       { rowsCount: 5, columnsCount: 60 },
     ],
-    expectedParenthesization: "((0, 1), 2)"
+    expectedParenthesization: "((0)(1))(2)"
   });
 
   // Test case #3
@@ -39,9 +39,10 @@ export function testSolver(solver: (input: IProblemInput) => IProblemSolution): 
       { rowsCount: 10, columnsCount: 3 },
       { rowsCount: 3, columnsCount: 12 },
       { rowsCount: 12, columnsCount: 5 },
+      { rowsCount: 5, columnsCount: 50 },
       { rowsCount: 50, columnsCount: 6 }
     ],
-    expectedParenthesization: "((0, 1), ((2, 3), (4, 5)))"
+    expectedParenthesization: "((0)(1))(((2)(3))((4)(5)))"
   });
 
   // Test case #4
@@ -50,32 +51,36 @@ export function testSolver(solver: (input: IProblemInput) => IProblemSolution): 
       { rowsCount: 30, columnsCount: 35 },
       { rowsCount: 35, columnsCount: 15 },
       { rowsCount: 15, columnsCount: 5 },
-      { rowsCount: 15, columnsCount: 5 },
-      { rowsCount: 15, columnsCount: 5 },
-      { rowsCount: 15, columnsCount: 5 },
+      { rowsCount: 5, columnsCount: 10 },
+      { rowsCount: 10, columnsCount: 20 },
+      { rowsCount: 20, columnsCount: 25 },
     ],
-    expectedParenthesization: "((0, 1), 2)"
+    expectedParenthesization: "((0)((1)(2)))(((3)(4))(5))"
   });
 
-
-  // multiplier = parenthesization.MatrixChainMultiplier([30, 35, 15, 5, 10, 20, 25])
-  // self.assertEqual(multiplier.parenthesize(), '((0, (1, 2)), ((3, 4), 5))')
-
-
-  testCases.forEach(testCase => {
-    let output = solver({ matrices: testCase.matrices });
-    expect(output).to.exist;
-    let stringified = stringifyParenthesization(output.parenthesization);
-    expect(stringified).to.equal(testCase.expectedParenthesization);
-  });
+  for(let i = 0; i < testCases.length; i++) {
+    it('Solves test case #' + i.toString(), () => {
+      let output = solver({ matrices: testCases[i].matrices });
+      expect(output).to.exist;
+      let stringified = stringifyParenthesization(testCases[i].matrices, output.parenthesization);
+      expect(stringified).to.equal(testCases[i].expectedParenthesization);
+    });
+  }
 }
 
-function stringifyParenthesization(parenthesization: IParenthesis[]): string {
-  let stringified = '';
+function stringifyParenthesization(matrices: IMatrix[], parenthesization: IParenthesis[]): string {
+  const stringified: string[] = Array(matrices.length).fill('');
+  const openParens: number[] = Array(matrices.length).fill(0);
+  const closedParens: number[] = Array(matrices.length).fill(0);
 
   parenthesization.forEach(paren => {
-    stringified = '(' + ')'
+    openParens[paren.startIndex] +=  1;
+    closedParens[paren.endIndex] +=  1;
   });
 
-  return stringified;
+  for(let i = 0; i < matrices.length; i++) {
+    stringified[i] = Array(openParens[i]).fill('(').join('') + i.toString() + Array(closedParens[i]).fill(')').join('');
+  }
+
+  return stringified.join('');
 }
