@@ -7,7 +7,7 @@
     "clean": "rimraf debug",
     "setup": "npm i",
     "test": "mocha -r ts-node/register problems/**/*.spec.ts",
-    "ci": "npm run build.test && npm run test"
+    "ci": "npm run test"
   },
   "repository": {
     "type": "git",
