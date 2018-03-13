@@ -3,8 +3,8 @@ import { IProblemSolution, IProblemInput, IParenthesis, IMatrix } from "../model
 export function topDownMemoSolver(input: IProblemInput): IProblemSolution {
   const matrices = input.matrices;
   const wholeParenthesis: IParenthesis = { startIndex: 0, endIndex: matrices.length - 1 };
-  const defaultBestParenthesization = new Map<IParenthesis, IParenthesis[]>();
-  const defaultBestScore = new Map<IParenthesis, number>();
+  const defaultBestParenthesization: IParenthesis[][][] = Array(input.matrices.length).fill(null).map((val, i) => new Array(input.matrices.length - i));
+  const defaultBestScore: number[][] = Array(input.matrices.length).fill(null).map((val, i) => new Array(input.matrices.length - i));
   const parenthesization = topDownMemoSolverAux(matrices, wholeParenthesis, defaultBestParenthesization, defaultBestScore);
   const solution: IProblemSolution = { parenthesization: parenthesization };
   return solution;
@@ -13,17 +13,18 @@ export function topDownMemoSolver(input: IProblemInput): IProblemSolution {
 function topDownMemoSolverAux(
   matrices: IMatrix[],
   parenthesis: IParenthesis,
-  bestParenthesization: Map<IParenthesis, IParenthesis[]>,
-  bestScore: Map<IParenthesis, number>): IParenthesis[] {
+  bestParenthesization: IParenthesis[][][],
+  bestScore: number[][]): IParenthesis[] {
 
-  if (bestParenthesization.has(parenthesis)) {
-    return bestParenthesization.get(parenthesis)!;
+  const memoized = bestParenthesization[parenthesis.startIndex][parenthesis.endIndex];
+  if (memoized) {
+    return memoized;
   }
 
   if(parenthesis.startIndex === parenthesis.endIndex) {
     const localBest = [parenthesis];
-    bestParenthesization.set(parenthesis, localBest);
-    bestScore.set(parenthesis, 0);
+    bestParenthesization[parenthesis.startIndex][parenthesis.endIndex] = localBest;
+    bestScore[parenthesis.startIndex][parenthesis.endIndex] = 0;
     return localBest;
   }
 
@@ -34,11 +35,11 @@ function topDownMemoSolverAux(
 
     const firstParens = { startIndex: parenthesis.startIndex, endIndex: i };
     const firstParenthesization = topDownMemoSolverAux(matrices, firstParens, bestParenthesization, bestScore);
-    const firstScore = bestScore.get(firstParens)!;
+    const firstScore = bestScore[firstParens.startIndex][firstParens.endIndex];
 
     const secondParens = { startIndex: i + 1, endIndex: parenthesis.endIndex };
     const secondParenthesization = topDownMemoSolverAux(matrices, secondParens, bestParenthesization, bestScore);
-    const secondScore = bestScore.get(secondParens)!;
+    const secondScore = bestScore[secondParens.startIndex][secondParens.endIndex];
 
     const score = firstScore + secondScore + matrices[firstParens.startIndex].rowsCount *  matrices[firstParens.endIndex].columnsCount * matrices[secondParens.endIndex].columnsCount;
 
@@ -54,8 +55,8 @@ function topDownMemoSolverAux(
     }
   }
 
-  bestParenthesization.set(parenthesis, localBest);
-  bestScore.set(parenthesis, localBestScore);
+  bestParenthesization[parenthesis.startIndex][parenthesis.endIndex] = localBest;
+  bestScore[parenthesis.startIndex][parenthesis.endIndex] = localBestScore;
 
   return localBest;
 }

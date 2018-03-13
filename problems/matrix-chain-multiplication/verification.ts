@@ -62,6 +62,7 @@ export function testSolver(solver: (input: IProblemInput) => IProblemSolution): 
     it('Solves test case #' + i.toString(), () => {
       let output = solver({ matrices: testCases[i].matrices });
       expect(output).to.exist;
+      expect(output.parenthesization).to.exist;
       let stringified = stringifyParenthesization(testCases[i].matrices, output.parenthesization);
       expect(stringified).to.equal(testCases[i].expectedParenthesization);
     });
